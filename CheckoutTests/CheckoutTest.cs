@@ -33,4 +33,36 @@ public class CheckoutTest
                 checkout.Scan("B");
             });
     }
+    
+    [Theory]
+    [MemberData(nameof(BasketItems))]
+    public void Scan_Sku_GetTotalPrice(List<string> skus, decimal expectedTotal)
+    {
+        var pricingRules = new PricingRules(
+            new Dictionary<string, Price>
+                    {
+                        { "A", new Price(50) },
+                        { "B", new Price(30) },
+                        { "C", new Price(20) },
+                        { "D", new Price(15) }
+                    });
+
+        var checkout = new Checkout(pricingRules, nullLogger);
+
+        foreach (var sku in skus)
+        {
+            checkout.Scan(sku);
+        }
+        
+        checkout.GetTotalPrice().ShouldBe(expectedTotal);
+    }
+
+    public static IEnumerable<object[]> BasketItems 
+        => new[]
+         {
+            new object[] { new List<string> {"A"}, 50 },
+            new object[] { new List<string> {"A", "A"}, 100 },
+            new object[] { new List<string> {"A", "B", "C", "D"}, 115 },
+         };
+
 }
