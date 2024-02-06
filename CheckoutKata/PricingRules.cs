@@ -12,4 +12,6 @@ public class PricingRules(Dictionary<string, Price> PriceList)
     }
 }
 
-public record Price(decimal UnitPrice);
+public record Price(decimal UnitPrice, MultiPriced? MultiPrice = null);
+
+public record MultiPriced(decimal Price, int Size);

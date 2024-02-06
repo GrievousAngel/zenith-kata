@@ -40,9 +40,26 @@ public sealed class Checkout: ICheckout
         foreach (var item in basket)
         {
             var skuPrice = pricingRules.GetPrice(item.Key);
-            total += skuPrice!.UnitPrice * item.Value;
+
+            if (skuPrice.MultiPrice == null)
+            {
+                total += skuPrice!.UnitPrice * item.Value;
+                continue;
+            }
+            
+            total += CalculateMultiPrice(skuPrice, item.Value);
+            
         }
 
         return total;
     }
+
+    private static decimal CalculateMultiPrice(Price price, int noOfSkus)
+    {
+        var multiPriceSize = price.MultiPrice!.Size;
+        var multiPriceCount = noOfSkus / multiPriceSize;
+        var remainingSkus = noOfSkus % multiPriceSize;
+        return (price.MultiPrice.Price * multiPriceCount) + (price.UnitPrice * remainingSkus);
+    }
+    
 }

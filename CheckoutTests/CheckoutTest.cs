@@ -41,8 +41,8 @@ public class CheckoutTest
         var pricingRules = new PricingRules(
             new Dictionary<string, Price>
                     {
-                        { "A", new Price(50) },
-                        { "B", new Price(30) },
+                        { "A", new Price(50, new MultiPriced(130,3)) },
+                        { "B", new Price(30, new MultiPriced(45,2)) },
                         { "C", new Price(20) },
                         { "D", new Price(15) }
                     });
@@ -61,8 +61,9 @@ public class CheckoutTest
         => new[]
          {
             new object[] { new List<string> {"A"}, 50 },
-            new object[] { new List<string> {"A", "A"}, 100 },
+            new object[] { new List<string> {"A", "A", "A"}, 130 },
             new object[] { new List<string> {"A", "B", "C", "D"}, 115 },
+            new object[] { new List<string> {"A", "A", "A", "A", "A", "B", "B", "B", "C", "C", "D"}, 360 }
          };
 
 }
